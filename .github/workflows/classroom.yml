@@ -1,0 +1,28 @@
+name: GitHub Classroom Workflow
+
+on: 
+  workflow_dispatch: # รันด้วยมือเท่านั้น
+
+jobs:
+  build:
+    name: Autograding
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: npm install
+      
+      # สร้างไฟล์ Test จาก Secret
+      - name: Create Secret Test
+        run: |
+          mkdir -p evaluation
+          echo "${{ secrets.TEACHER_TEST_CODE }}" > evaluation/teacher.test.js
+        shell: bash
+
+      # รัน Test
+      - name: Teacher Grading
+        run: npm run test:grade

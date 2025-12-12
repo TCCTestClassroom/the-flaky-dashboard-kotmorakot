@@ -1,0 +1,14 @@
+{
+  "name": "flaky-dashboard",
+  "version": "1.0.0",
+  "description": "Handle unstable API",
+  "main": "src/dashboard.js",
+  "scripts": {
+    "test": "jest",
+    "test:grade": "jest evaluation/teacher.test.js --detectOpenHandles --forceExit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
