@@ -6,15 +6,14 @@ async function loadDashboard() {
   const start = Date.now();
 
   try {
-    // PROBLEM 1: Sequential loading (Slow!)
-    // If each request takes 1s, total time = 3s.
-    const profile = await api.fetchUserProfile();
-    const orders = await api.fetchOrders();
-    const notifications = await api.fetchNotifications();
-
-    // PROBLEM 2: No Error Handling
-    // If 'fetchOrders' fails (which happens 30% of the time), 
-    // the whole dashboard crashes and returns nothing.
+    // SOLUTION: Parallel loading with retry
+    // - All 3 requests run concurrently (time = max of 3, not sum)
+    // - Each request has independent retry logic with backoff
+    const [profile, orders, notifications] = await Promise.all([
+      util.retryWithBackoff(() => api.fetchUserProfile()),
+      util.retryWithBackoff(() => api.fetchOrders()),
+      util.retryWithBackoff(() => api.fetchNotifications()),
+    ]);
 
     return {
       success: true,
